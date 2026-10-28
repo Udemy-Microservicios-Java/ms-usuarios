@@ -14,11 +14,15 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "usuario")
+@EqualsAndHashCode(exclude = "usuario")
 @Entity
 @Table(name = "ab_codigos_otp")
 public class AbCodigoOtp {
