@@ -18,8 +18,12 @@ public class ManejadorExcepciones {
 
     @ExceptionHandler(ExcepcionNegocio.class)
     public ResponseEntity<ExcepcionClient.Cuerpo> manejar(ExcepcionNegocio ex) {
+        return responder(ex.getCodigo());
+    }
+
+    public ResponseEntity<ExcepcionClient.Cuerpo> responder(String codigo) {
         try {
-            ExcepcionClient.Cuerpo cuerpo = excepcionClient.buscarPorCodigo(ex.getCodigo());
+            ExcepcionClient.Cuerpo cuerpo = excepcionClient.buscarPorCodigo(codigo);
             return ResponseEntity.status(estado(cuerpo.codigoHttp())).body(cuerpo);
         } catch (RestClientException error) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
