@@ -91,7 +91,7 @@ public class AuthService {
                 .map(relacion -> relacion.getRol().getNombre())
                 .toList();
 
-        String token = jwtService.generar(usuario.getCorreo(), usuario.getId());
+        String token = jwtService.generar(usuario.getCorreo(), usuario.getId(), roles);
         return new LoginResponse(usuario.getId(), usuario.getNombreUsuario(), usuario.getCorreo(), roles, token);
     }
 
