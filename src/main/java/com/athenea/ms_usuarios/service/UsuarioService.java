@@ -6,15 +6,14 @@ import com.athenea.ms_usuarios.entity.AbPoliticaPrivacidad;
 import com.athenea.ms_usuarios.entity.AbRol;
 import com.athenea.ms_usuarios.entity.AbUsuario;
 import com.athenea.ms_usuarios.entity.AbUsuarioRol;
+import com.athenea.ms_usuarios.exception.ExcepcionNegocio;
 import com.athenea.ms_usuarios.repository.PoliticaRepository;
 import com.athenea.ms_usuarios.repository.RolRepository;
 import com.athenea.ms_usuarios.repository.UsuarioRepository;
 import com.athenea.ms_usuarios.repository.UsuarioRolRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -56,14 +55,14 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponse crear(UsuarioRequest request) {
         if (usuarioRepository.existsByCorreo(request.getCorreo())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "El correo ya está registrado");
+            throw new ExcepcionNegocio("ERC-047");
         }
         if (usuarioRepository.existsByNombreUsuario(request.getNombreUsuario())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "El nombre de usuario ya está registrado");
+            throw new ExcepcionNegocio("ERC-048");
         }
 
         AbPoliticaPrivacidad politica = politicaRepository.findById(request.getPoliticaId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "La política no existe"));
+                .orElseThrow(() -> new ExcepcionNegocio("ERC-070"));
 
         AbUsuario usuario = new AbUsuario();
         usuario.setNombreUsuario(request.getNombreUsuario());
@@ -80,7 +79,7 @@ public class UsuarioService {
 
     private void asignarRolLector(AbUsuario usuario) {
         AbRol rol = rolRepository.findByNombre(ROL_LECTOR)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El rol no existe"));
+                .orElseThrow(() -> new ExcepcionNegocio("ERC-073"));
 
         AbUsuarioRol usuarioRol = new AbUsuarioRol();
         usuarioRol.setUsuario(usuario);
@@ -90,7 +89,7 @@ public class UsuarioService {
 
     private UsuarioResponse aRespuesta(AbUsuario usuario) {
         if (usuario.getPolitica() == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La política no existe");
+            throw new ExcepcionNegocio("ERC-070");
         }
         return new UsuarioResponse(
                 usuario.getId(),
