@@ -17,7 +17,7 @@ public class JwtService {
     private final long expiracionSegundos;
 
     public JwtService(@Value("${jwt.secret}") String secret,
-                       @Value("${jwt.expiracion-segundos}") long expiracionSegundos) {
+            @Value("${jwt.expiracion-segundos}") long expiracionSegundos) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expiracionSegundos = expiracionSegundos;
     }
@@ -31,5 +31,13 @@ public class JwtService {
                 .expiration(Date.from(ahora.plusSeconds(expiracionSegundos)))
                 .signWith(key, Jwts.SIG.HS256)
                 .compact();
+    }
+
+    public io.jsonwebtoken.Claims leer(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
