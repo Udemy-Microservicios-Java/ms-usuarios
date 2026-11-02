@@ -14,6 +14,7 @@ import com.athenea.ms_usuarios.repository.PoliticaRepository;
 import com.athenea.ms_usuarios.repository.RolRepository;
 import com.athenea.ms_usuarios.repository.UsuarioRepository;
 import com.athenea.ms_usuarios.repository.UsuarioRolRepository;
+import com.athenea.ms_usuarios.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,19 +32,22 @@ public class AuthService {
     private final UsuarioRolRepository usuarioRolRepository;
     private final PasswordEncoder passwordEncoder;
     private final UsuarioMapper usuarioMapper;
+    private final JwtService jwtService;
 
     public AuthService(UsuarioRepository usuarioRepository,
-                        PoliticaRepository politicaRepository,
-                        RolRepository rolRepository,
-                        UsuarioRolRepository usuarioRolRepository,
-                        PasswordEncoder passwordEncoder,
-                        UsuarioMapper usuarioMapper) {
+            PoliticaRepository politicaRepository,
+            RolRepository rolRepository,
+            UsuarioRolRepository usuarioRolRepository,
+            PasswordEncoder passwordEncoder,
+            UsuarioMapper usuarioMapper,
+            JwtService jwtService) {
         this.usuarioRepository = usuarioRepository;
         this.politicaRepository = politicaRepository;
         this.rolRepository = rolRepository;
         this.usuarioRolRepository = usuarioRolRepository;
         this.passwordEncoder = passwordEncoder;
         this.usuarioMapper = usuarioMapper;
+        this.jwtService = jwtService;
     }
 
     @Transactional
@@ -87,7 +91,8 @@ public class AuthService {
                 .map(relacion -> relacion.getRol().getNombre())
                 .toList();
 
-        return new LoginResponse(usuario.getId(), usuario.getNombreUsuario(), usuario.getCorreo(), roles);
+        String token = jwtService.generar(usuario.getCorreo(), usuario.getId());
+        return new LoginResponse(usuario.getId(), usuario.getNombreUsuario(), usuario.getCorreo(), roles, token);
     }
 
     private void asignarRolLector(AbUsuario usuario) {
