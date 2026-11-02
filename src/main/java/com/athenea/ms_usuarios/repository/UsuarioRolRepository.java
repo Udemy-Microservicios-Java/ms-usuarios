@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UsuarioRolRepository extends JpaRepository<AbUsuarioRol, AbUsuarioRol.UsuarioRolId> {
-    
+
+    java.util.List<AbUsuarioRol> findByUsuario_Id(Long usuarioId);
+
 }

@@ -8,10 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.athenea.ms_usuarios.dto.request.UsuarioRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -35,11 +31,5 @@ public class UsuarioController {
         return usuarioService.buscarPorNombreUsuario(nombreUsuario)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public ResponseEntity<UsuarioResponse> crear(@RequestBody UsuarioRequest request) {
-        UsuarioResponse creado = usuarioService.crear(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 }
