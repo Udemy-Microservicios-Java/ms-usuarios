@@ -8,10 +8,8 @@ public class ExcepcionClient {
 
     private final RestClient restClient;
 
-    public ExcepcionClient() {
-        this.restClient = RestClient.builder()
-                .baseUrl("http://localhost:8082")
-                .build();
+    public ExcepcionClient(RestClient restClient) {
+        this.restClient = restClient;
     }
 
     public Cuerpo buscarPorCodigo(String codigo) {
@@ -22,6 +20,6 @@ public class ExcepcionClient {
     }
 
     public record Cuerpo(String codigo, String codigoHttp, String tipo, String mensaje) {
-        
+
     }
 }
